@@ -4,7 +4,7 @@
 
 [![Crates.io](https://img.shields.io/crates/v/bevy_puffin.svg)](https://crates.io/crates/bevy_puffin)
 [![Documentation](https://docs.rs/bevy_puffin/badge.svg)](https://docs.rs/bevy_puffin)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/bevyengine/bevy/blob/master/LICENSE)
+[![MIT/Apache 2.0](https://img.shields.io/badge/license-MIT%2FApache-blue.svg)](./LICENSE)
 [![Downloads](https://img.shields.io/crates/d/bevy_puffin.svg)](https://crates.io/crates/bevy_puffin)
 [![Rust](https://github.com/mvlabat/bevy_puffin/workflows/CI/badge.svg)](https://github.com/mvlabat/bevy_puffin/actions)
 
@@ -15,3 +15,12 @@ plugin and exposes `PuffinLayer`, which allows users set up `tracing` manually w
 as a subscriber layer.
 
 For the usage example, see [`examples/main.rs`](examples/main.rs).
+
+## License
+
+`bevy_puffin` is dual-licensed under either
+
+* MIT License ([LICENSE-MIT](./LICENSE-MIT) or http://opensource.org/licenses/MIT)
+* Apache License, Version 2.0 ([LICENSE-APACHE](./LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+
+at your option.
