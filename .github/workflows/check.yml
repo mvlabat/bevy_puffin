@@ -1,0 +1,84 @@
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+name: CI
+
+jobs:
+  fmt:
+    name: Formatter check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          override: true
+          components: rustfmt
+      - uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check
+
+  clippy:
+    name: Clippy check
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          components: clippy
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: cache-${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
+          restore-keys: |
+            cache-${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
+            cache-${{ runner.os }}-cargo
+      - name: Install dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev
+      - uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --all-targets -- -D warnings
+
+  doc:
+    name: Check documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: cache-doc-cargo-${{ hashFiles('**/Cargo.toml') }}
+          restore-keys: |
+            cache-doc-cargo-${{ hashFiles('**/Cargo.toml') }}
+            cache-doc-cargo
+      - uses: actions-rs/cargo@v1
+        with:
+          command: doc
+          args: --all --features "bevy/x11"
+        env:
+          RUSTDOCFLAGS: -D warnings
