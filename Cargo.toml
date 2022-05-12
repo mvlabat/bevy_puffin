@@ -5,6 +5,7 @@ authors = ["mvlabat <mvlabat@gmail.com>"]
 description = "Integration layer between Bevy, puffin and tracing"
 license = "MIT OR Apache-2.0"
 edition = "2021"
+repository = "https://github.com/mvlabat/bevy_puffin"
 exclude = [".github/**/*"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
