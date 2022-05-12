@@ -14,6 +14,12 @@ It provides `PuffinTracePlugin` to use as a replacement for the Bevy's default `
 plugin and exposes `PuffinLayer`, which allows users to set up [`tracing`](https://github.com/tokio-rs/tracing)
 manually with [`puffin`](https://github.com/EmbarkStudios/puffin) as a subscriber layer.
 
+The main goal of this plugin is to demonstrate the missing bits for the `puffin` support in Bevy:
+- Add `tracing` integration [(EmbarkStudios/puffin#79)](https://github.com/EmbarkStudios/puffin/pull/79)
+- `puffin_tracing` support [(bevyengine/bevy#4730)](https://github.com/bevyengine/bevy/pull/4730)
+
+If these two PRs get merged, there's a good chance that this plugin will be discontinued.
+
 For the usage example, see [`examples/main.rs`](examples/main.rs).
 
 ## License
