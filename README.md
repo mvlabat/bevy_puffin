@@ -8,11 +8,11 @@
 [![Downloads](https://img.shields.io/crates/d/bevy_puffin.svg)](https://crates.io/crates/bevy_puffin)
 [![Rust](https://github.com/mvlabat/bevy_puffin/workflows/CI/badge.svg)](https://github.com/mvlabat/bevy_puffin/actions)
 
-This crate integrates the `puffin` library into Bevy.
+This crate integrates the [`puffin`](https://github.com/EmbarkStudios/puffin) library into Bevy.
 
 It provides `PuffinTracePlugin` to use as a replacement for the Bevy's default `LogPlugin`
-plugin and exposes `PuffinLayer`, which allows users set up `tracing` manually with `puffin`
-as a subscriber layer.
+plugin and exposes `PuffinLayer`, which allows users to set up [`tracing`](https://github.com/tokio-rs/tracing)
+manually with [`puffin`](https://github.com/EmbarkStudios/puffin) as a subscriber layer.
 
 For the usage example, see [`examples/main.rs`](examples/main.rs).
 
@@ -24,3 +24,14 @@ For the usage example, see [`examples/main.rs`](examples/main.rs).
 * Apache License, Version 2.0 ([LICENSE-APACHE](./LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
 
 at your option.
+
+## See also
+
+- [`mvlabat/bevy_egui`](https://github.com/mvlabat/bevy_egui)
+- [`EmbarkStudios/puffin`](https://github.com/EmbarkStudios/puffin)
+
+## Bevy support table
+
+| bevy | bevy_puffin |
+|------|-----------|
+| 0.7  | 0.1 |
