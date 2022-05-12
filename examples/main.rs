@@ -1,4 +1,4 @@
-use bevy::{app::PluginGroupBuilder, prelude::*};
+use bevy::{log::LogPlugin, prelude::*};
 use bevy_egui::{EguiContext, EguiPlugin};
 use bevy_puffin::PuffinTracePlugin;
 
@@ -6,7 +6,7 @@ fn main() {
     App::new()
         // Note that `DefaultBevyPlugins` is defined below (we aren't using the exactly same set
         // of default plugins as we need to exlude Bevy's `LogPlugin`).
-        .add_plugins(DefaultBevyPlugins)
+        .add_plugins_with(DefaultPlugins, |group| group.disable::<LogPlugin>())
         .add_plugin(PuffinTracePlugin::new())
         .add_plugin(EguiPlugin)
         .add_system(show_profiler)
@@ -52,56 +52,5 @@ fn sleep_ms(ms: usize) {
             sleep_ms(ms / 2);
             sleep_ms(ms - (ms / 2));
         }
-    }
-}
-
-pub struct DefaultBevyPlugins;
-
-impl PluginGroup for DefaultBevyPlugins {
-    fn build(&mut self, group: &mut PluginGroupBuilder) {
-        group.add(bevy::core::CorePlugin::default());
-        group.add(bevy::transform::TransformPlugin::default());
-        group.add(bevy::hierarchy::HierarchyPlugin::default());
-        group.add(bevy::diagnostic::DiagnosticsPlugin::default());
-        group.add(bevy::input::InputPlugin::default());
-        group.add(bevy::window::WindowPlugin::default());
-        group.add(bevy::asset::AssetPlugin::default());
-        group.add(bevy::scene::ScenePlugin::default());
-
-        // bevy/debug_asset_server
-        // group.add(bevy::asset::debug_asset_server::DebugAssetServerPlugin::default());
-
-        // bevy/bevy_winit
-        group.add(bevy::winit::WinitPlugin::default());
-
-        // bevy/bevy_render
-        group.add(bevy::render::RenderPlugin::default());
-
-        // bevy/bevy_core_pipeline
-        group.add(bevy::core_pipeline::CorePipelinePlugin::default());
-
-        // bevy/bevy_sprite
-        group.add(bevy::sprite::SpritePlugin::default());
-
-        // bevy/bevy_text
-        group.add(bevy::text::TextPlugin::default());
-
-        // bevy/bevy_ui
-        group.add(bevy::ui::UiPlugin::default());
-
-        // bevy/bevy_pbr
-        group.add(bevy::pbr::PbrPlugin::default());
-
-        // bevy/bevy_gltf
-        group.add(bevy::gltf::GltfPlugin::default());
-
-        // bevy/bevy_audio
-        group.add(bevy::audio::AudioPlugin::default());
-
-        // bevy/bevy_gilrs
-        group.add(bevy::gilrs::GilrsPlugin::default());
-
-        // bevy/bevy_animation
-        group.add(bevy::animation::AnimationPlugin::default());
     }
 }
