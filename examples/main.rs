@@ -4,6 +4,8 @@ use bevy_puffin::PuffinTracePlugin;
 
 fn main() {
     App::new()
+        // Note that `DefaultBevyPlugins` is defined below (we aren't using the exactly same set
+        // of default plugins as we need to exlude Bevy's `LogPlugin`).
         .add_plugins(DefaultBevyPlugins)
         .add_plugin(PuffinTracePlugin::new())
         .add_plugin(EguiPlugin)
