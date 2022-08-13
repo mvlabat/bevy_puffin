@@ -40,4 +40,5 @@ at your option.
 
 | bevy | bevy_puffin |
 |------|-----------|
+| 0.8  | 0.2 |
 | 0.7  | 0.1 |
