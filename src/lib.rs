@@ -3,8 +3,8 @@
 //! This crate integrates the `puffin` library into Bevy.
 //!
 //! It provides [`PuffinTracePlugin`] to use as a replacement for the Bevy's default `LogPlugin`
-//! plugin and exposes [`PuffinLayer`], which allows users set up `tracing` manually with `puffin`
-//! as a subscriber layer.
+//! plugin and exposes [`PuffinLayer`], which allows users to set up `tracing` manually with
+//! `puffin` as a subscriber layer.
 
 pub use puffin;
 
