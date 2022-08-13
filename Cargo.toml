@@ -11,7 +11,7 @@ exclude = [".github/**/*"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = { version = "0.7", default-features = false, features = ["trace"] }
+bevy = { version = "0.8", default-features = false, features = ["trace"] }
 puffin = "0.13"
 tracing-subscriber = {version = "0.3.1", features = ["registry", "env-filter"]}
 tracing-log = "0.1.2"
@@ -22,6 +22,6 @@ console_error_panic_hook = "0.1.6"
 tracing-wasm = "0.2.1"
 
 [dev-dependencies]
-bevy = "0.7.0"
-bevy_egui = "0.14.0"
-puffin_egui = "0.15.0"
+bevy = "0.8.0"
+bevy_egui = "0.15.0"
+puffin_egui = "0.16.0"
