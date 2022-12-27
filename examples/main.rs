@@ -4,7 +4,7 @@ use bevy_puffin::PuffinTracePlugin;
 
 fn main() {
     App::new()
-        .add_plugins_with(DefaultPlugins, |group| group.disable::<LogPlugin>())
+        .add_plugins(DefaultPlugins.build().disable::<LogPlugin>())
         .add_plugin(PuffinTracePlugin::new())
         .add_plugin(EguiPlugin)
         .add_system(show_profiler)

@@ -10,8 +10,9 @@ pub use puffin;
 
 use bevy::{
     app::{App, Plugin},
-    log::LogSettings,
-    prelude::{ExclusiveSystemDescriptorCoercion, IntoExclusiveSystem},
+    ecs::schedule::IntoSystemDescriptor,
+    log,
+    log::Level,
     utils::tracing::{
         span::{Attributes, Record},
         Id, Subscriber,
@@ -35,9 +36,8 @@ thread_local! {
 
 /// A plugin that sets up `puffin` and configures it as a `tracing-subscriber` layer.
 ///
-/// Note that this plugin can't be used with Bevy's default `LogPlugin`, which also renders
-/// it incompatible with Bevy's `DefaultPlugins`. If you want to use `PuffinTracePlugin`,
-/// you'll need to add all the Bevy plugins manually.
+/// Note that this plugin can't be used with Bevy's default `LogPlugin`. If you are using the
+/// `DefaultPlugins` group, make sure to disable `LogPlugin`.
 ///
 /// Unlike Bevy's `LogPlugin`, this plugin doesn't support Android and it doesn't initialize
 /// `tracing-tracy` or `tracing-chrome`. If you need to support either of those, consider
@@ -45,6 +45,8 @@ thread_local! {
 pub struct PuffinTracePlugin {
     init_systems: bool,
     init_scopes: bool,
+    filter: String,
+    level: Level,
 }
 
 impl Default for PuffinTracePlugin {
@@ -52,6 +54,8 @@ impl Default for PuffinTracePlugin {
         Self {
             init_systems: true,
             init_scopes: true,
+            filter: "wgpu=error".to_string(),
+            level: Level::INFO,
         }
     }
 }
@@ -97,6 +101,17 @@ impl PuffinTracePlugin {
             ..self
         }
     }
+
+    /// Filters logs using the [`EnvFilter`] format.
+    pub fn with_filter(self, filter: String) -> Self {
+        Self { filter, ..self }
+    }
+
+    /// Filters out logs that are "less than" the given level.
+    /// This can be further filtered using the `filter` setting.
+    pub fn with_level(self, level: Level) -> Self {
+        Self { level, ..self }
+    }
 }
 
 impl Plugin for PuffinTracePlugin {
@@ -107,7 +122,6 @@ impl Plugin for PuffinTracePlugin {
                 (|| {
                     puffin::GlobalProfiler::lock().new_frame();
                 })
-                .exclusive_system()
                 .at_start(),
             );
         }
@@ -123,11 +137,8 @@ impl Plugin for PuffinTracePlugin {
             }));
         }
 
-        let default_filter = {
-            let settings = app.world.get_resource_or_insert_with(LogSettings::default);
-            format!("{},{}", settings.level, settings.filter)
-        };
-        LogTracer::init().unwrap();
+        let finished_subscriber;
+        let default_filter = format!("{},{}", self.level, self.filter);
         let filter_layer = EnvFilter::try_from_default_env()
             .or_else(|_| EnvFilter::try_new(&default_filter))
             .unwrap();
@@ -139,19 +150,28 @@ impl Plugin for PuffinTracePlugin {
         #[cfg(not(target_arch = "wasm32"))]
         {
             let fmt_layer = tracing_subscriber::fmt::Layer::default();
-            let subscriber = subscriber.with(fmt_layer);
-            bevy::utils::tracing::subscriber::set_global_default(subscriber)
-                .expect("Could not set global default tracing subscriber. If you've already set up a tracing subscriber, please disable LogPlugin from Bevy's DefaultPlugins");
+            finished_subscriber = subscriber.with(fmt_layer);
         }
 
         #[cfg(target_arch = "wasm32")]
         {
             console_error_panic_hook::set_once();
-            let subscriber = subscriber.with(tracing_wasm::WASMLayer::new(
+            finished_subscriber = subscriber.with(tracing_wasm::WASMLayer::new(
                 tracing_wasm::WASMLayerConfig::default(),
             ));
-            bevy::utils::tracing::subscriber::set_global_default(subscriber)
-                .expect("Could not set global default tracing subscriber. If you've already set up a tracing subscriber, please disable LogPlugin from Bevy's DefaultPlugins");
+        }
+
+        let logger_already_set = LogTracer::init().is_err();
+        let subscriber_already_set =
+            bevy::utils::tracing::subscriber::set_global_default(finished_subscriber).is_err();
+
+        match (logger_already_set, subscriber_already_set) {
+            (true, true) => log::warn!(
+                "Could not set global logger and tracing subscriber for bevy_puffin as they are already set. Consider disabling LogPlugin or re-ordering plugin initialisation."
+            ),
+            (true, _) => log::warn!("Could not set global logger as it is already set. Consider disabling LogPlugin."),
+            (_, true) => log::warn!("Could not set global tracing subscriber as it is already set. Consider disabling LogPlugin."),
+            _ => (),
         }
     }
 }
