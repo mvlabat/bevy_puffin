@@ -1,5 +1,5 @@
 use bevy::{log::LogPlugin, prelude::*};
-use bevy_egui::{EguiContext, EguiPlugin};
+use bevy_egui::{EguiContexts, EguiPlugin};
 use bevy_puffin::PuffinTracePlugin;
 
 fn main() {
@@ -11,10 +11,10 @@ fn main() {
         .run();
 }
 
-fn show_profiler(mut ctx: ResMut<EguiContext>, mut frame_counter: Local<usize>) {
+fn show_profiler(mut contexts: EguiContexts, mut frame_counter: Local<usize>) {
     puffin::profile_function!();
 
-    let ctx = ctx.ctx_mut();
+    let ctx = contexts.ctx_mut();
     puffin_egui::profiler_window(ctx);
 
     std::thread::Builder::new()

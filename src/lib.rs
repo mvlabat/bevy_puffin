@@ -9,8 +9,8 @@
 pub use puffin;
 
 use bevy::{
-    app::{App, Plugin},
-    ecs::schedule::IntoSystemDescriptor,
+    app::{App, CoreSet, Plugin},
+    ecs::schedule::IntoSystemConfig,
     log,
     log::Level,
     utils::tracing::{
@@ -114,16 +114,15 @@ impl PuffinTracePlugin {
     }
 }
 
+/// Marks a new frame for the puffin profiler.
+pub fn new_frame_system() {
+    puffin::GlobalProfiler::lock().new_frame();
+}
+
 impl Plugin for PuffinTracePlugin {
     fn build(&self, app: &mut App) {
         if self.init_systems {
-            app.add_system_to_stage(
-                bevy::app::CoreStage::First,
-                (|| {
-                    puffin::GlobalProfiler::lock().new_frame();
-                })
-                .at_start(),
-            );
+            app.add_system(new_frame_system.in_base_set(CoreSet::First));
         }
         if self.init_scopes {
             puffin::set_scopes_on(true);
@@ -167,7 +166,7 @@ impl Plugin for PuffinTracePlugin {
 
         match (logger_already_set, subscriber_already_set) {
             (true, true) => log::warn!(
-                "Could not set global logger and tracing subscriber for bevy_puffin as they are already set. Consider disabling LogPlugin or re-ordering plugin initialisation."
+                "Could not set global logger and tracing subscriber for bevy_puffin as they are already set. Consider disabling LogPlugin or re-ordering plugin initialization."
             ),
             (true, _) => log::warn!("Could not set global logger as it is already set. Consider disabling LogPlugin."),
             (_, true) => log::warn!("Could not set global tracing subscriber as it is already set. Consider disabling LogPlugin."),

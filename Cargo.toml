@@ -1,6 +1,6 @@
 [package]
 name = "bevy_puffin"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["mvlabat <mvlabat@gmail.com>"]
 description = "Integration layer between Bevy, puffin and tracing"
 license = "MIT OR Apache-2.0"
@@ -11,7 +11,7 @@ exclude = [".github/**/*"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = { version = "0.9", default-features = false, features = ["trace"] }
+bevy = { version = "0.10", default-features = false, features = ["trace"] }
 puffin = "0.14"
 tracing-subscriber = {version = "0.3", features = ["registry", "env-filter"]}
 tracing-log = "0.1"
@@ -22,6 +22,6 @@ console_error_panic_hook = "0.1"
 tracing-wasm = "0.2"
 
 [dev-dependencies]
-bevy = "0.9"
-bevy_egui = "0.18"
-puffin_egui = "0.19"
+bevy = "0.10"
+bevy_egui = "0.20"
+puffin_egui = "0.20"
