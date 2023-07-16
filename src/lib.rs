@@ -9,14 +9,13 @@
 pub use puffin;
 
 use bevy::{
-    app::{App, CoreSet, Plugin},
-    ecs::schedule::IntoSystemConfig,
+    app::{App, Plugin},
     log,
     log::Level,
     utils::tracing::{
         span::{Attributes, Record},
         Id, Subscriber,
-    },
+    }, prelude::First,
 };
 use puffin::ThreadProfiler;
 use std::{cell::RefCell, collections::VecDeque, panic};
@@ -122,7 +121,7 @@ pub fn new_frame_system() {
 impl Plugin for PuffinTracePlugin {
     fn build(&self, app: &mut App) {
         if self.init_systems {
-            app.add_system(new_frame_system.in_base_set(CoreSet::First));
+            app.add_systems(First, new_frame_system);
         }
         if self.init_scopes {
             puffin::set_scopes_on(true);
